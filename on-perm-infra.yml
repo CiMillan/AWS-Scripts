@@ -2,7 +2,8 @@ Description: >
     Cintia Millan / Udacity 2020
     This is a CloudFormation script to deploy a private corporate cloud.
     This template deploys a VPC, with a pair of private subnets (one in each AZ).
-    It deploys a Virtual Private Gateway, with a default route on the private subnets.
+    It deploys a Virtual Private Gateway, with a default route on the private subnets,
+    and a on-perm Customer Gateway.
 
 Parameters:
 
