@@ -77,7 +77,7 @@ Resources:
         Properties:
             RouteTableId: !Ref PrivateRouteTable1
             DestinationCidrBlock: 0.0.0.0/0
-            GatewayId: !Ref VPNVGW
+            GatewayId: !Ref VPCVGW
 
     PrivateSubnet1RouteTableAssociation:
         Type: AWS::EC2::SubnetRouteTableAssociation
@@ -99,11 +99,44 @@ Resources:
         Properties:
             RouteTableId: !Ref PrivateRouteTable2
             DestinationCidrBlock: 0.0.0.0/0
-            GatewayId: !Ref VPNVGW
+            GatewayId: !Ref VPCVGW
 
     PrivateSubnet2RouteTableAssociation:
         Type: AWS::EC2::SubnetRouteTableAssociation
         Properties:
             RouteTableId: !Ref PrivateRouteTable2
             SubnetId: !Ref PrivateSubnet2
+
+    OurVPN:        
+        Type: "AWS::EC2::VPNConnection"
+        Properties: 
+            Type: ipsec.1
+            StaticRoutesOnly: true
+            CustomerGatewayId: 
+                !Ref ONPREMCGW
+            VpnGatewayId: 
+                !Ref VPCVGW
+    VPCVGW:
+        Type: "AWS::EC2::VPNGateway"
+        Properties: 
+            Type: ipsec.1
+            Tags:
+                - Key: Name
+                  Value: !Sub "${EnvironmentName} Amazon-side Gateway"
+    AttachVpnGateway:
+        Type: AWS::EC2::VPCGatewayAttachment
+        Properties:
+            VpcId:
+                !Ref VPC
+            VpnGatewayId:
+                Ref: VPCVGW
+    ONPREMCGW:
+        Type: "AWS::EC2::CustomerGateway"
+        Properties:
+            BgpAsn : 65000
+            IpAddress: !Ref 'OnPremGateway'
+            Tags:
+                - Key: Name
+                  Value: !Sub "${EnvironmentName} On Prem Gateway"
+            Type: ipsec.1
 
