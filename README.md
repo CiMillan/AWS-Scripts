@@ -1,2 +1,2 @@
 # AWS-Scripts
-Templates
+Templates for AWS CloudFormation
